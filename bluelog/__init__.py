@@ -14,10 +14,12 @@ from flask_sqlalchemy import SQLAlchemy
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
 from blueprints.blog import blog_bp
-
+from settings import config
 
 app = Flask('bluelog')
-app.config.from_pyfile('settings.py')
+# app.config.from_pyfile('settings.py')
+config_name = os.getenv('FLASK_CONFIG', 'development')
+app.config.from_object(config[config_name])
 
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
