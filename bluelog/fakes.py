@@ -18,6 +18,7 @@ def fake_admin():
             name='Mima Kirigoe',
             about='Um, I, Mima Kirigoe, had a fun time as a memeber of CHAM...'
             )
+    admin.password = 'helloflask'
     db.session.add(admin)
     db.session.commit()
 
