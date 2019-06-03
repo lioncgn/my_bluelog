@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
+from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash, make_response
 from bluelog.models import Post, Comment, Category
 from bluelog.forms import CommentForm, AdminCommentForm
 from bluelog.emails import send_new_reply_email, send_new_comment_email
 from bluelog.extensions import db
+from bluelog.utils import redirect_back
 
 blog_bp = Blueprint('blog', __name__)
 
@@ -86,3 +87,15 @@ def show_post(post_id):
             send_new_comment_email(post)
         return redirect(url_for('.show_post', post_id=post_id))
     return render_template('blog/post.html', post=post, pagination=pagination, form=form,  comments=comments) 
+
+@blog_bp.route('/change-theme/<theme_name>')
+def change_theme(theme_name):
+    if theme_name not in current_app.config['BLUELOG_THEMES']:
+        abort(404)
+    #手动生成一个响应对象，传入响应主体作为参数
+    response = make_response(redirect_back())
+    response.set_cookie('theme', theme_name, max_age=30*24*60*60)
+    return response
+
+
+

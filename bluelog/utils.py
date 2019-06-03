@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
+#辅助函数
 try:
     from urlparse import urlparse
 except ImportError:
