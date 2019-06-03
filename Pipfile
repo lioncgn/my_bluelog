@@ -16,6 +16,7 @@ flask-moment = "*"
 python-dotenv = "*"
 flask-ckeditor = "*"
 flask-wtf = "*"
+unidecode = "*"
 
 [requires]
 python_version = "2.7"

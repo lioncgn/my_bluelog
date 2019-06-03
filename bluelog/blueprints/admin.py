@@ -2,7 +2,7 @@
 # -*- coding=utf-8 -*-
 
 from flask import Blueprint, render_template, redirect, url_for
-from bluelog.forms import SettingForm, PostForm, CategoryForm
+from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm
 from bluelog.utils import redirect_back
 
 #创建蓝本，第一个参数是蓝本名称，第二个参数是模块的名称
@@ -65,4 +65,20 @@ def edit_category(category_id):
 def delete_category(category_id):
     return redirect(url_for('.manage_category'))
 
+@admin_bp.route('/link/manage')
+def manage_link():
+    return render_template('admin/manage_link.html')
 
+@admin_bp.route('/link/new', methods=['GET', 'POST'])
+def new_link():
+    form = LinkForm()
+    return render_template('admin/new_link.html', form=form)
+
+@admin_bp.route('/link/<int:link_id>/edit', methods=['GET', 'POST'])
+def edit_link(link_id):
+    form = LinkForm()
+    return render_template('admin/edit_link.html', form=form)
+
+@admin_bp.route('/link/<int:link_id>/delete', methods=['POST'])
+def delet_link(link_id):
+    return redirect(url_for('.manage_link'))

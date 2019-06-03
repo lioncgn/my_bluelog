@@ -28,7 +28,7 @@ class Post(db.Model):
     can_comment = db.Column(db.Boolean, default=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', back_populates='posts')
-
+#集合关系属性列表
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
 
 class Comment(db.Model):
@@ -43,10 +43,17 @@ class Comment(db.Model):
 
 #   针对哪一篇博客的评论
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-#给这个属性赋值的时候，在另一侧也会自动给它赋值
+#给这个属性赋值的时候，在另一侧也会自动给它赋值,标量关系属性
     post = db.relationship('Post', back_populates='comments')
-    #建立自引用关系，一条评论有多个回复
+    #建立自引用关系，一条评论有多个回复,这个id也可以说是回复的id
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    #remote_side 定义的一侧为 一,也就是评论
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+    #对应的这一侧就是回复
     replies = db.relationship('Comment', back_populates='replied', cascade='all')
-    
+
+class Link(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    url = db.Column(db.String(255))
+

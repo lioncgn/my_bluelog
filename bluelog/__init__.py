@@ -10,7 +10,7 @@ from extensions import bootstrap, db, ckeditor, mail, moment
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
 from blueprints.blog import blog_bp
-from models import Admin, Post, Category, Comment
+from models import Admin, Post, Category, Comment, Link
 from settings import config
 
 
@@ -68,7 +68,7 @@ def register_commands(app):
     @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
     def forge(category, post, comment):
         """Generate fake data."""
-        from fakes import fake_admin, fake_categories, fake_posts, fake_comments
+        from fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
         db.drop_all()
         db.create_all()
         
@@ -83,6 +83,9 @@ def register_commands(app):
 
         click.echo('Generating %d comments...' % comment)
         fake_comments(comment)
+        
+        click.echo('Generating links...')
+        fake_links()
 
         click.echo('Done.')
 
@@ -112,7 +115,8 @@ def register_template_context(app):
     def make_template_context():
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
-        return dict(admin=admin, categories=categories)
+        links = Link.query.order_by(Link.name).all()
+        return dict(admin=admin, categories=categories, links=links)
 
 
 

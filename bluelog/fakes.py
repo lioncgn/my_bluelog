@@ -5,7 +5,7 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from bluelog import db
-from models import Admin, Category, Post, Comment
+from models import Admin, Category, Post, Comment, Link
 
 fake = Faker()
 
@@ -99,4 +99,12 @@ def fake_comments(count=500):
                 )
         db.session.add(comment)
 
+    db.session.commit()
+
+def fake_links():
+    twitter = Link(name='Twitter', url='#')
+    facebook = Link(name='Facebook', url='#')
+    linkedin = Link(name='LinkedIn', url='#')
+    google = Link(name='Google+', url='#')
+    db.session.add_all([twitter, facebook, linkedin, google])
     db.session.commit()
