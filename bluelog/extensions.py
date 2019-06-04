@@ -7,6 +7,7 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 
 bootstrap = Bootstrap()
@@ -15,6 +16,7 @@ ckeditor = CKEditor()
 mail = Mail()
 moment = Moment()
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 #当调用current_user对象，Flask-Login会调用用户加载函数并返回对应的用户对象；
 @login_manager.user_loader
