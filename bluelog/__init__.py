@@ -6,7 +6,7 @@ import os
 import click
 from flask import Flask, render_template
 
-from extensions import bootstrap, db, ckeditor, mail, moment
+from extensions import bootstrap, db, ckeditor, mail, moment, login_manager
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
 from blueprints.blog import blog_bp
@@ -42,6 +42,7 @@ def register_extensions(app):
     ckeditor.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    login_manager.init_app(app)
 
 def register_blueprints(app):
     #注册蓝本

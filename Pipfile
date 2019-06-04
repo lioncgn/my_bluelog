@@ -17,6 +17,7 @@ python-dotenv = "*"
 flask-ckeditor = "*"
 flask-wtf = "*"
 unidecode = "*"
+flask-login = "*"
 
 [requires]
 python_version = "2.7"

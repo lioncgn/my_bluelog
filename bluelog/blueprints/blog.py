@@ -2,6 +2,7 @@
 # -*- coding=utf-8 -*-
 
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash, make_response
+from flask_login import current_user
 from bluelog.models import Post, Comment, Category
 from bluelog.forms import CommentForm, AdminCommentForm
 from bluelog.emails import send_new_reply_email, send_new_comment_email
@@ -11,8 +12,8 @@ from bluelog.utils import redirect_back
 blog_bp = Blueprint('blog', __name__)
 
 
-class Current_user:
-    is_authenticated = False
+# class Current_user:
+    # is_authenticated = False
 
 @blog_bp.route('/')
 def index():
@@ -56,9 +57,9 @@ def show_post(post_id):
     pagination = Comment.query.with_parent(post).filter_by(reviewed=True).order_by(Comment.timestamp.asc()).paginate(page, per_page)
     comments = pagination.items
 
-    if Current_user.is_authenticated:
+    if current_user.is_authenticated:
         form = AdminCommentForm()
-        form.author.data = Current_user.name
+        form.author.data = current_user.name
         form.email.data = current_app.config['BLUELOG_EMAIL']
         form.site.data = url_for('.index')
         from_admin = True
@@ -80,7 +81,7 @@ def show_post(post_id):
             send_new_reply_email(replied_comment)
         db.session.add(comment)
         db.session.commit()
-        if Current_user.is_authenticated:
+        if current_user.is_authenticated:
             flash('Comment published.', 'success')
         else:
             flash('Thanks, your comment will be published after reviewed.', 'info')
