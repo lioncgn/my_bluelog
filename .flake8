@@ -1,0 +1,7 @@
+[flake8]
+#忽略检查的文件或者目录
+	exclude = .git,*migrations*
+#设置最长的行长度，默认79
+	max-line-length = 119
+#设置最大复杂度阈值
+	max-complexity = 7

@@ -30,6 +30,6 @@ login_manager.login_view = 'auth.login'
 #设置消息的分类，默认message
 login_manager.login_message_category = 'warning'
 #设置提示消息的内容
-login_manager.login_message = 'Personal custom message'
+login_manager.login_message = 'Please log in to access this page.'
 
 

@@ -6,6 +6,8 @@ name = "pypi"
 [dev-packages]
 watchdog = "*"
 faker = "*"
+coverage = "*"
+"flake8" = "*"
 
 [packages]
 flask = "*"
