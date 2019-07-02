@@ -7,8 +7,9 @@ import click
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 from flask_login import current_user
+from flask_sqlalchemy import get_debug_queries
 
-from extensions import bootstrap, db, ckeditor, mail, moment, login_manager, csrf
+from extensions import bootstrap, db, ckeditor, mail, moment, login_manager, csrf, toolbar
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
 from blueprints.blog import blog_bp
@@ -33,6 +34,7 @@ def create_app(config_name=None):
     register_errors(app)  #注册错误处理函数
     register_shell_context(app)  #注册shell上下文处理函数
     register_template_context(app)  #注册模板上下文处理函数
+    register_request_handlers(app)
     return app
 
 def register_logging(app):
@@ -46,6 +48,7 @@ def register_extensions(app):
     moment.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    toolbar.init_app(app)
 
 def register_blueprints(app):
     #注册蓝本
@@ -165,6 +168,13 @@ def register_template_context(app):
         return dict(admin=admin, categories=categories, links=links, unread_comments=unread_comments)
 
 
-
+def register_request_handlers(app):
+    @app.after_request
+    def query_profiler(response):
+        for q in get_debug_queries():
+            if q.duration >= app.config['BLUELOG_SLOW_QUERY_THRESHOLD']:
+                app.logger.warning('Slow query: Duration: %fs\n Context: %s\nQuery: %s\n ' % \
+                        (q.duration, q.context, q.statement))
+        return response
 
 

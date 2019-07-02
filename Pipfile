@@ -20,6 +20,7 @@ flask-ckeditor = "*"
 flask-wtf = "*"
 unidecode = "*"
 flask-login = "*"
+flask-debugtoolbar = "*"
 
 [requires]
 python_version = "2.7"
