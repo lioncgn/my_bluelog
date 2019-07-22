@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
-
+import logging
 import os
+from logging.handlers import SMTPHandler, RotatingFileHandler
 
 import click
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFError
 from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
 
-from extensions import bootstrap, db, ckeditor, mail, moment, login_manager, csrf, toolbar
+from extensions import bootstrap, db, ckeditor, mail, moment, login_manager, csrf, toolbar, migrate
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
 from blueprints.blog import blog_bp
 from models import Admin, Post, Category, Comment, Link
 from settings import config
 
+basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 #使用flask run 运行程序时，Flask的自动发现程序实例机制，会自动从环境变量FLASK_APP的值定义的模块中寻找
@@ -38,7 +40,39 @@ def create_app(config_name=None):
     return app
 
 def register_logging(app):
-    pass
+    app.logger.setLevel(logging.INFO)
+    class RequestFormatter(logging.Formatter):
+
+        def format(self, record):
+            record.url = request.url
+            record.remote_url = request.remote_url
+            return super(RequestFormatter, self).format(record)
+
+    request_formatter = RequestFormatter(
+            '[%(asctime)s] %(remote_url)s requested %(url)s\n'
+            '%(levelname)s in %(module)s: %(message)s'
+            )
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bluelog.log'), maxBytes=10 * 1024 * 1024, backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+
+    mail_handler = SMTPHandler(
+            mailhost=app.config['MAIL_SERVER'],
+            fromaddr=app.config['MAIL_USERNAME'],
+            toaddrs=['ADMIN_EMAIL'],
+            subject='Bluelog Application Error',
+            credentials=(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+            )
+    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setFormatter(request_formatter)
+
+#FLASK_ENV 为development时，app.debug返回True,否则返回False
+    if not app.debug:
+        app.logger.addHandler(mail_handler)
+        app.logger.addHandler(file_handler)
+    
+    
 
 def register_extensions(app):
     bootstrap.init_app(app)
@@ -49,6 +83,7 @@ def register_extensions(app):
     login_manager.init_app(app)
     csrf.init_app(app)
     toolbar.init_app(app)
+    migrate.init_app(app, db)
 
 def register_blueprints(app):
     #注册蓝本

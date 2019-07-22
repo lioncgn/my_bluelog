@@ -21,6 +21,8 @@ flask-wtf = "*"
 unidecode = "*"
 flask-login = "*"
 flask-debugtoolbar = "*"
+flask-migrate = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "2.7"
