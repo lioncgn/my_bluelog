@@ -9,7 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_migrate import Migrate
 
 
 bootstrap = Bootstrap()
@@ -20,7 +19,6 @@ moment = Moment()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 toolbar = DebugToolbarExtension()
-migrate = Migrate()
 
 #当调用current_user对象，Flask-Login会调用用户加载函数并返回对应的用户对象；
 @login_manager.user_loader

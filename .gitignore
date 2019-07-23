@@ -1,7 +1,3 @@
 *.db
 .env
 *.pyc
-
-#Development
-logs/*
-!logs/.gitkeep
