@@ -46,7 +46,7 @@ def new_post():
         body = form.body.data
         category = Category.query.get(form.category.data)
         post = Post(title=title, body=body, category=category)
-        db.session.add()
+        db.session.add(post)
         db.session.commit()
         flash('Post created.', 'success')
         return redirect(url_for('blog.show_post', post_id=post.id))
