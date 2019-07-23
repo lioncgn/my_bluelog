@@ -45,11 +45,11 @@ def register_logging(app):
 
         def format(self, record):
             record.url = request.url
-            record.remote_url = request.remote_url
+            record.remote_addr = request.remote_addr
             return super(RequestFormatter, self).format(record)
 
     request_formatter = RequestFormatter(
-            '[%(asctime)s] %(remote_url)s requested %(url)s\n'
+            '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
             '%(levelname)s in %(module)s: %(message)s'
             )
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
